@@ -1,5 +1,10 @@
 streamlit
 pandas
 matplotlib
+seaborn
 google-generativeai
 python-dotenv
+openpyxl
+scikit-learn         
+plotly               
+numpy   
