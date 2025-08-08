@@ -25,8 +25,9 @@ def extract_quoted_columns(query: str) -> list:
 def get_code_from_query(user_query: str, df_columns: list) -> str:
     """
     Uses Gemini to generate Python code based on a user query,
-    respecting quoted column names and actual df columns.
+    only using actual columns from uploaded data (df).
     """
+
     quoted_cols = extract_quoted_columns(user_query)
 
     prompt = f"""
@@ -35,21 +36,25 @@ You are a data analysis assistant. The user is working with a pandas DataFrame n
 Here are the actual column names in the DataFrame:
 {df_columns}
 
-The user mentioned the following column names in quotes — these are correct and MUST be used exactly:
+The user mentioned the following column names in quotes:
 {quoted_cols if quoted_cols else '[]'}
 
-Instructions:
-- Use the column names exactly as written (respect casing, spaces, and underscores).
-- Do NOT "guess" or auto-convert column names.
-- If plotting, use matplotlib or seaborn.
-- Do NOT use plt.show() (it will be handled by the app).
-- ❌ Do NOT wrap code inside functions like def show_plot().
-- ✅ Just write the code as-is that performs the operation and generates plots.
-- If creating a new DataFrame, use df2, df3, etc.
-- Return code only — no text, no explanations.
+🚫 IMPORTANT CONSTRAINTS:
+- Only use the DataFrame `df` uploaded by the user. Do NOT assume or generate new data.
+- DO NOT create or assume any DataFrame like `df2`, `df3`, or `new_df` unless explicitly requested.
+- DO NOT create any DataFrame with sample data.
+- If the user references a column that doesn't exist in `df_columns`, then return a comment like:
+  `# Error: One or more referenced columns do not exist in the uploaded data.`
+- Do not wrap the code in functions or classes.
+- Use matplotlib or seaborn for plots (but NO plt.show()).
+- Always use the column names exactly (including spaces, casing, underscores).
 
-User Task:
-{user_query}
+📌 Task:
+Generate Python code (only code, no explanation) that performs this task on the user's DataFrame:
+
+"{user_query}"
+
+If the task is not possible due to missing columns or unclear instruction, return a comment explaining the problem.
     """
 
     response = model.generate_content(prompt)
