@@ -48,6 +48,7 @@ The user mentioned the following column names in quotes:
 - Do not wrap the code in functions or classes.
 - Use matplotlib or seaborn for plots (but NO plt.show()).
 - Always use the column names exactly (including spaces, casing, underscores).
+- Always try to avoid this error :: Error during code execution: name 'df_columns' is not defined
 
 📌 Task:
 Generate Python code (only code, no explanation) that performs this task on the user's DataFrame:
