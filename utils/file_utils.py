@@ -3,7 +3,8 @@
 
 import pandas as pd
 
-def read_file(file) -> pd.DataFrame:
+def read_file(file) -> pd.DataFrame:   #can be removed as the function is being implemented in the uploader.py file
+    
     """
     Reads a CSV or Excel file and returns a DataFrame.
     """
